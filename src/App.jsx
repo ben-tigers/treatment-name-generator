@@ -184,6 +184,49 @@ export default function TreatmentNameGenerator() {
     generateNames();
   }, []);
 
+  // Load Jotform scripts for survey
+  useEffect(() => {
+    const loadJotformScripts = () => {
+      // Load feedback script
+      if (!document.querySelector('script[src*="feedback2.js"]')) {
+        const feedbackScript = document.createElement('script');
+        feedbackScript.src = 'https://cdn.jotfor.ms/s/static/latest/static/feedback2.js';
+        feedbackScript.type = 'text/javascript';
+        document.head.appendChild(feedbackScript);
+      }
+
+      // Load embed handler script
+      if (!document.querySelector('script[src*="for-form-embed-handler.js"]')) {
+        const embedScript = document.createElement('script');
+        embedScript.src = 'https://cdn.jotfor.ms/s/umd/latest/for-form-embed-handler.js';
+        document.head.appendChild(embedScript);
+      }
+
+      // Initialize Jotform feedback after scripts load
+      setTimeout(() => {
+        if (window.JotformFeedback) {
+          window.JFL_252788118677069 = new window.JotformFeedback({
+            formId: '252788118677069',
+            base: 'https://form.jotform.com/',
+            windowTitle: 'Behavioral Health Industry Appreciation Survey',
+            backgroundColor: '#FFA500',
+            fontColor: '#FFFFFF',
+            type: '0',
+            height: 500,
+            width: 700,
+            openOnLoad: false
+          });
+        }
+
+        if (window.jotformEmbedHandler) {
+          window.jotformEmbedHandler("iframe[id='252788118677069']", "https://form.jotform.com/");
+        }
+      }, 1000);
+    };
+
+    loadJotformScripts();
+  }, []);
+
   // Log analytics for development
   useEffect(() => {
     if (analytics.totalGenerations > 0) {
@@ -763,23 +806,56 @@ export default function TreatmentNameGenerator() {
             )}
           </div>
         ) : (
-          <div className="glass rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl animate-scaleIn border-2 border-purple-500/30" role="region" aria-label="Global Statistics">
-            <div className="text-center">
-              <div className="inline-flex items-center gap-3 mb-4">
-                <Sparkles className="w-6 sm:w-8 h-6 sm:h-8 text-purple-400 animate-pulse" aria-hidden="true" />
-                <h3 className="text-2xl sm:text-3xl font-black text-white">
-                  Global Names Generated
-                </h3>
-                <Sparkles className="w-6 sm:w-8 h-6 sm:h-8 text-purple-400 animate-pulse" style={{ animationDelay: '0.5s' }} aria-hidden="true" />
+          <>
+            {/* Survey Block */}
+            <div className="mb-10">
+              <div style={{backgroundColor:'#f8f9fb',padding:'20px',borderRadius:'12px',textAlign:'center',boxShadow:'0 2px 8px rgba(0,0,0,0.1)',maxWidth:'400px',margin:'auto'}}>
+                <h3 style={{marginBottom:'10px',color:'#333',fontFamily:'Arial, sans-serif'}}>We Love to Celebrate the Treatment Community</h3>
+                <p style={{color:'#555',marginBottom:'15px',fontFamily:'Arial, sans-serif',fontSize:'14px'}}>
+                  Share a few details about your work in behavioral health and enjoy a $5 Starbucks gift card on us.
+                </p>
+                <a 
+                  className="btn lightbox-252788118677069"
+                  style={{
+                    marginTop: '16px',
+                    textTransform: 'uppercase',
+                    fontSize: '14px',
+                    textDecoration: 'none',
+                    cursor: 'pointer',
+                    display: 'inline-block',
+                    padding: '10px',
+                    fontFamily: 'inherit',
+                    textShadow: 'none',
+                    userSelect: 'none',
+                    transition: 'all,.1s,ease-in',
+                    backgroundColor: '#FFA500',
+                    border: '1px solid #FFA500',
+                    color: '#FFFFFF',
+                  }}
+                >
+                  Behavioral Health Industry Appreciation Survey
+                </a>
               </div>
-              <div className="text-4xl sm:text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 mb-4">
-                <GlobalTotal />
-              </div>
-              <p className="text-purple-200 text-base sm:text-lg">
-                Join users worldwide in discovering amazing names!
-              </p>
             </div>
-          </div>
+
+            <div className="glass rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl animate-scaleIn border-2 border-purple-500/30" role="region" aria-label="Global Statistics">
+              <div className="text-center">
+                <div className="inline-flex items-center gap-3 mb-4">
+                  <Sparkles className="w-6 sm:w-8 h-6 sm:h-8 text-purple-400 animate-pulse" aria-hidden="true" />
+                  <h3 className="text-2xl sm:text-3xl font-black text-white">
+                    Global Names Generated
+                  </h3>
+                  <Sparkles className="w-6 sm:w-8 h-6 sm:h-8 text-purple-400 animate-pulse" style={{ animationDelay: '0.5s' }} aria-hidden="true" />
+                </div>
+                <div className="text-4xl sm:text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 mb-4">
+                  <GlobalTotal />
+                </div>
+                <p className="text-purple-200 text-base sm:text-lg">
+                  Join users worldwide in discovering amazing names!
+                </p>
+              </div>
+            </div>
+          </>
         )}
         
         {/* Privacy Notice */}
