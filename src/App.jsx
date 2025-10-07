@@ -772,19 +772,6 @@ export default function TreatmentNameGenerator() {
               <p className="text-purple-200 text-base sm:text-lg">
                 Join users worldwide in discovering amazing names!
               </p>
-              <div className="mt-4 text-center">
-                <p className="text-xs text-purple-400">
-                  💡 To enable global counter, set up Supabase database
-                </p>
-                <a 
-                  href="https://github.com/ben-tigers/treatment-name-generator/blob/main/DATABASE_SETUP.md" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-xs text-purple-300 hover:text-purple-200 underline"
-                >
-                  View setup guide →
-                </a>
-              </div>
             </div>
           </div>
         )}
