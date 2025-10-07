@@ -17,8 +17,11 @@ export default async function handler(req, res) {
 
   try {
     const { token } = req.query;
-    
-    if (!token || token !== process.env.ADMIN_TOKEN) {
+    // Normalize tokens to avoid whitespace/newline mismatches
+    const providedToken = (token || '').trim();
+    const expectedToken = (process.env.ADMIN_TOKEN || '').trim();
+
+    if (!providedToken || providedToken !== expectedToken) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
