@@ -22,6 +22,7 @@ try {
 export default function GlobalTotal() {
   const [total, setTotal] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     let isActive = true;
@@ -43,10 +44,12 @@ export default function GlobalTotal() {
         const data = await response.json();
         if (isActive && typeof data.total === 'number') {
           setTotal(data.total);
+          setError(null);
         }
       } catch (error) {
         console.error('Failed to fetch initial total:', error);
         if (isActive) {
+          setError('Database not configured');
           setTotal(0);
         }
       }
@@ -73,6 +76,7 @@ export default function GlobalTotal() {
                 const newTotal = payload.new && payload.new.total;
                 if (typeof newTotal === 'number' && isActive) {
                   setTotal(newTotal);
+                  setError(null);
                 }
               } catch (error) {
                 console.warn('Error processing realtime update:', error);
@@ -117,6 +121,11 @@ export default function GlobalTotal() {
   return (
     <span className="text-purple-200 font-bold">
       {total.toLocaleString()}
+      {error && (
+        <span className="text-xs text-yellow-400 block mt-1">
+          {error}
+        </span>
+      )}
     </span>
   );
 }
