@@ -5,16 +5,15 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [token, setToken] = useState('');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const fetchEvents = async () => {
-    const effectiveToken = (token || sessionStorage.getItem('ADMIN_TOKEN') || new URLSearchParams(location.search).get('token') || '').trim();
+  const fetchEvents = async (explicitToken) => {
+    const effectiveToken = (explicitToken ?? token ?? '').trim();
     if (!effectiveToken) {
       setError('');
+      setLoading(false);
       return;
     }
-    // Persist the token for subsequent requests
-    sessionStorage.setItem('ADMIN_TOKEN', effectiveToken);
-    setToken(effectiveToken);
     
     try {
       setLoading(true);
@@ -27,6 +26,7 @@ export default function AdminPage() {
       
       if (!response.ok) {
         if (response.status === 401) {
+          setIsAuthenticated(false);
           setError('Invalid admin token');
         } else {
           setError('Failed to fetch events');
@@ -37,6 +37,8 @@ export default function AdminPage() {
       const data = await response.json();
       setEvents(data.events || []);
       setError(null);
+      setIsAuthenticated(true);
+      sessionStorage.setItem('ADMIN_TOKEN', effectiveToken);
     } catch (err) {
       setError('Network error');
     } finally {
@@ -45,21 +47,16 @@ export default function AdminPage() {
   };
 
   useEffect(() => {
-    // Initialize token from URL or sessionStorage on mount
+    // Initialize token from URL or sessionStorage on mount (do not auto-submit)
     const urlToken = (new URLSearchParams(window.location.search).get('token') || '').trim();
     const stored = (sessionStorage.getItem('ADMIN_TOKEN') || '').trim();
     const initial = urlToken || stored;
-    if (initial) {
-      setToken(initial);
-      // Kick off fetch after state update
-      setTimeout(fetchEvents, 0);
-    } else {
-      setLoading(false);
-    }
+    if (initial) setToken(initial);
+    setLoading(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (!token) {
+  if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
         <div className="glass rounded-3xl p-8 max-w-md w-full mx-4">
@@ -79,7 +76,7 @@ export default function AdminPage() {
             />
             <p className="text-xs text-purple-300 mt-1">Tip: You can paste the full token here. It won’t auto-capitalize or correct on iOS.</p>
             <button
-              onClick={() => token && fetchEvents()}
+              onClick={() => token && fetchEvents(token)}
               className="w-full px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl text-white font-semibold hover:scale-105 transition-transform"
             >
               Access Admin Panel
