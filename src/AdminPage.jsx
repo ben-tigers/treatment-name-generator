@@ -7,11 +7,23 @@ export default function AdminPage() {
   const [token, setToken] = useState('');
 
   const fetchEvents = async () => {
-    if (!token) return;
+    const effectiveToken = (token || sessionStorage.getItem('ADMIN_TOKEN') || new URLSearchParams(location.search).get('token') || '').trim();
+    if (!effectiveToken) {
+      setError('');
+      return;
+    }
+    // Persist the token for subsequent requests
+    sessionStorage.setItem('ADMIN_TOKEN', effectiveToken);
+    setToken(effectiveToken);
     
     try {
       setLoading(true);
-      const response = await fetch(`/api/admin?token=${encodeURIComponent(token)}`);
+      const response = await fetch(`/api/admin?token=${encodeURIComponent(effectiveToken)}`, {
+        headers: {
+          // Also send via header to avoid query-string issues/caches
+          'Authorization': `Bearer ${effectiveToken}`
+        }
+      });
       
       if (!response.ok) {
         if (response.status === 401) {
@@ -33,10 +45,19 @@ export default function AdminPage() {
   };
 
   useEffect(() => {
-    if (token) {
-      fetchEvents();
+    // Initialize token from URL or sessionStorage on mount
+    const urlToken = (new URLSearchParams(window.location.search).get('token') || '').trim();
+    const stored = (sessionStorage.getItem('ADMIN_TOKEN') || '').trim();
+    const initial = urlToken || stored;
+    if (initial) {
+      setToken(initial);
+      // Kick off fetch after state update
+      setTimeout(fetchEvents, 0);
+    } else {
+      setLoading(false);
     }
-  }, [token]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (!token) {
     return (
@@ -77,7 +98,7 @@ export default function AdminPage() {
                 Refresh
               </button>
               <button
-                onClick={() => setToken('')}
+                onClick={() => { sessionStorage.removeItem('ADMIN_TOKEN'); setToken(''); setEvents([]); setError(null); history.replaceState(null, '', location.pathname); }}
                 className="px-4 py-2 bg-gray-600 rounded-lg text-white hover:bg-gray-700 transition-colors"
               >
                 Logout
