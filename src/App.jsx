@@ -76,60 +76,57 @@ const TEMPLATES = [
 ];
 
 const generateName = (locked = [], alliteration = false, customWord = '', includeCustom = false, wordCount = 3, existingNames = []) => {
-  let template = TEMPLATES[Math.floor(Math.random() * TEMPLATES.length)];
-  
   const parts = [];
-  let totalWordCount = 0;
-  const targetWordCount = includeCustom && customWord.trim() ? wordCount : wordCount;
-  const customWordCount = customWord.trim().split(' ').length;
+  let remainingWords = wordCount;
   
-  let customWordPosition = -1;
+  // Handle custom word if included
   if (includeCustom && customWord.trim()) {
-    customWordPosition = Math.floor(Math.random() * (template.length + 1));
+    const customWordCount = customWord.trim().split(' ').length;
+    if (customWordCount <= remainingWords) {
+      parts.push(customWord.trim());
+      remainingWords -= customWordCount;
+    }
   }
   
-  for (let i = 0; i < template.length; i++) {
-    if (totalWordCount >= targetWordCount) break;
-    
-    if (i === customWordPosition && customWord.trim() && totalWordCount + customWordCount <= targetWordCount) {
-      parts.push(customWord.trim());
-      totalWordCount += customWordCount;
-      continue;
-    }
-    
+  // Handle locked words
+  for (let i = 0; i < locked.length && remainingWords > 0; i++) {
     if (locked[i]) {
       const lockedWordCount = locked[i].split(' ').length;
-      if (totalWordCount + lockedWordCount <= targetWordCount) {
+      if (lockedWordCount <= remainingWords) {
         parts.push(locked[i]);
-        totalWordCount += lockedWordCount;
+        remainingWords -= lockedWordCount;
       }
-    } else {
-      const bucket = WORDBANK[template[i]];
-      
-      const validWords = bucket.filter(w => {
-        const wc = w.text.split(' ').length;
-        return totalWordCount + wc <= targetWordCount;
-      });
-      
-      if (validWords.length === 0) continue;
-      
-      let word = validWords[Math.floor(Math.random() * validWords.length)].text;
-      
-      if (alliteration && parts.length > 0) {
-        const targetLetter = parts[0].charAt(0).toLowerCase();
-        const alliterativeWords = validWords.filter(w => w.text.charAt(0).toLowerCase() === targetLetter);
-        if (alliterativeWords.length > 0) {
-          word = alliterativeWords[Math.floor(Math.random() * alliterativeWords.length)].text;
-        }
-      }
-      
-      parts.push(word);
-      totalWordCount += word.split(' ').length;
     }
   }
   
-  if (customWordPosition === template.length && customWord.trim() && totalWordCount + customWordCount <= targetWordCount) {
-    parts.push(customWord.trim());
+  // Generate remaining words using templates
+  while (remainingWords > 0) {
+    // Choose a random template category
+    const categories = Object.keys(WORDBANK);
+    const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+    const bucket = WORDBANK[randomCategory];
+    
+    // Find words that fit within remaining word count
+    const validWords = bucket.filter(w => {
+      const wc = w.text.split(' ').length;
+      return wc <= remainingWords;
+    });
+    
+    if (validWords.length === 0) break;
+    
+    let word = validWords[Math.floor(Math.random() * validWords.length)].text;
+    
+    // Apply alliteration if requested
+    if (alliteration && parts.length > 0) {
+      const targetLetter = parts[0].charAt(0).toLowerCase();
+      const alliterativeWords = validWords.filter(w => w.text.charAt(0).toLowerCase() === targetLetter);
+      if (alliterativeWords.length > 0) {
+        word = alliterativeWords[Math.floor(Math.random() * alliterativeWords.length)].text;
+      }
+    }
+    
+    parts.push(word);
+    remainingWords -= word.split(' ').length;
   }
   
   const generatedName = parts.join(' ');
