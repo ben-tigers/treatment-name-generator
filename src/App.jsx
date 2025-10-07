@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Sparkles, Lock, Unlock, Heart, Copy, Share2, Download, RefreshCw, Wand2, Zap, Star } from 'lucide-react';
 import GlobalTotal from './components/GlobalTotal';
-import IOSDebugInfo from './components/IOSDebugInfo';
 
 const WORDBANK = {
   NATURE_WATER: [
@@ -785,7 +784,6 @@ export default function TreatmentNameGenerator() {
           </div>
         </footer>
       </div>
-      <IOSDebugInfo />
     </div>
   );
 }
