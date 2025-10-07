@@ -6,6 +6,21 @@ export default function AdminPage() {
   const [error, setError] = useState(null);
   const [token, setToken] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [geolocationData, setGeolocationData] = useState({});
+
+  const fetchGeolocation = async (ip) => {
+    if (!ip || geolocationData[ip]) return; // Skip if already fetched
+    
+    try {
+      const response = await fetch(`/api/geolocation?ip=${encodeURIComponent(ip)}`);
+      if (response.ok) {
+        const data = await response.json();
+        setGeolocationData(prev => ({ ...prev, [ip]: data }));
+      }
+    } catch (error) {
+      console.warn(`Failed to fetch geolocation for ${ip}:`, error);
+    }
+  };
 
   const fetchEvents = async (explicitToken) => {
     const effectiveToken = (explicitToken ?? token ?? '').trim();
@@ -39,6 +54,10 @@ export default function AdminPage() {
       setError(null);
       setIsAuthenticated(true);
       sessionStorage.setItem('ADMIN_TOKEN', effectiveToken);
+      
+      // Fetch geolocation data for unique IPs
+      const uniqueIPs = [...new Set((data.events || []).map(event => event.ip).filter(Boolean))];
+      uniqueIPs.forEach(ip => fetchGeolocation(ip));
     } catch (err) {
       setError('Network error');
     } finally {
@@ -135,28 +154,31 @@ export default function AdminPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {events.map((event, index) => (
-                    <tr key={event.id || index} className="border-b border-white/10">
-                      <td className="py-3 px-4 text-white">
-                        {new Date(event.created_at).toLocaleString()}
-                      </td>
-                      <td className="py-3 px-4 text-purple-200 font-mono text-xs">
-                        {event.ip || 'N/A'}
-                      </td>
-                      <td className="py-3 px-4 text-purple-200">
-                        {event.city || 'N/A'}
-                      </td>
-                      <td className="py-3 px-4 text-purple-200">
-                        {event.region || 'N/A'}
-                      </td>
-                      <td className="py-3 px-4 text-purple-200">
-                        {event.country || 'N/A'}
-                      </td>
-                      <td className="py-3 px-4 text-purple-200 text-xs max-w-xs truncate">
-                        {event.user_agent || 'N/A'}
-                      </td>
-                    </tr>
-                  ))}
+                  {events.map((event, index) => {
+                    const geoData = geolocationData[event.ip];
+                    return (
+                      <tr key={event.id || index} className="border-b border-white/10">
+                        <td className="py-3 px-4 text-white">
+                          {new Date(event.created_at).toLocaleString()}
+                        </td>
+                        <td className="py-3 px-4 text-purple-200 font-mono text-xs">
+                          {event.ip || 'N/A'}
+                        </td>
+                        <td className="py-3 px-4 text-purple-200">
+                          {geoData?.city || event.city || 'Loading...'}
+                        </td>
+                        <td className="py-3 px-4 text-purple-200">
+                          {geoData?.region || event.region || 'Loading...'}
+                        </td>
+                        <td className="py-3 px-4 text-purple-200">
+                          {geoData?.country || event.country || 'Loading...'}
+                        </td>
+                        <td className="py-3 px-4 text-purple-200 text-xs max-w-xs truncate">
+                          {event.user_agent || 'N/A'}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
               
