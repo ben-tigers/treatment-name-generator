@@ -602,7 +602,7 @@ export default function TreatmentNameGenerator() {
           </div>
 
           <div className="flex flex-col sm:flex-row flex-wrap gap-4 sm:gap-6 justify-center mb-8 items-center" role="group" aria-label="Generation controls">
-            <div className="glass-dark px-4 sm:px-6 py-3 sm:py-4 rounded-xl flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
+            <div className="glass-dark px-4 sm:px-6 py-3 sm:py-4 rounded-xl flex flex-col sm:flex-row items-center gap-3 sm:gap-4 w-full sm:w-auto max-w-md mx-auto">
               <input
                 type="text"
                 value={customWord}
@@ -624,7 +624,7 @@ export default function TreatmentNameGenerator() {
               <span id="include-custom-description" className="sr-only">Include custom word in generated names</span>
             </div>
 
-            <div className="glass-dark px-6 py-4 rounded-xl flex items-center gap-4">
+            <div className="hidden md:flex glass-dark px-6 py-4 rounded-xl items-center gap-4">
               <span className="text-purple-200 font-semibold">Words:</span>
               <span className="hidden md:inline text-purple-300 text-sm">(Current: {wordCount})</span>
               <div className="flex gap-2" role="group" aria-label="Word count selection">
@@ -646,7 +646,7 @@ export default function TreatmentNameGenerator() {
               </div>
             </div>
             
-            <label className="group glass-dark px-6 py-3 rounded-xl cursor-pointer transition-all duration-300 hover:scale-105 hover:border-purple-400 flex items-center gap-3">
+            <label className="group glass-dark px-6 py-3 rounded-xl cursor-pointer transition-all duration-300 hover:scale-105 hover:border-purple-400 flex items-center gap-3 w-full sm:w-auto max-w-md mx-auto justify-center">
               <input
                 type="checkbox"
                 checked={alliteration}
