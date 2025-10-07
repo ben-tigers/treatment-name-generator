@@ -50,13 +50,18 @@ export default function AdminPage() {
       }
       
       const data = await response.json();
-      setEvents(data.events || []);
+      // Filter out Vercel internal IPs
+      const filteredEvents = (data.events || []).filter(event => 
+        event.ip !== '146.190.115.58' && 
+        !event.ip?.startsWith('146.190.115.')
+      );
+      setEvents(filteredEvents);
       setError(null);
       setIsAuthenticated(true);
       sessionStorage.setItem('ADMIN_TOKEN', effectiveToken);
       
-      // Fetch geolocation data for unique IPs
-      const uniqueIPs = [...new Set((data.events || []).map(event => event.ip).filter(Boolean))];
+      // Fetch geolocation data for unique IPs (excluding Vercel IPs)
+      const uniqueIPs = [...new Set(filteredEvents.map(event => event.ip).filter(Boolean))];
       uniqueIPs.forEach(ip => fetchGeolocation(ip));
     } catch (err) {
       setError('Network error');
