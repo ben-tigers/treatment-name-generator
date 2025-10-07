@@ -626,7 +626,7 @@ export default function TreatmentNameGenerator() {
 
             <div className="glass-dark px-6 py-4 rounded-xl flex items-center gap-4">
               <span className="text-purple-200 font-semibold">Words:</span>
-              <span className="text-purple-300 text-sm">(Current: {wordCount})</span>
+              <span className="hidden md:inline text-purple-300 text-sm">(Current: {wordCount})</span>
               <div className="flex gap-2" role="group" aria-label="Word count selection">
                 {[2, 3, 4, 5, 6, 7].map((count) => (
                   <button
