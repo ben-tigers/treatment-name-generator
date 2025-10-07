@@ -18,6 +18,12 @@ export default async function handler(req, res) {
   try {
     const { token } = req.query;
     
+    console.log('Admin token check:', {
+      providedToken: token,
+      expectedToken: process.env.ADMIN_TOKEN,
+      tokensMatch: token === process.env.ADMIN_TOKEN
+    });
+    
     if (!token || token !== process.env.ADMIN_TOKEN) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
