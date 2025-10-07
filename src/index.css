@@ -1,3 +1,59 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* iOS Safari compatibility fixes */
+@supports (-webkit-touch-callout: none) {
+  /* iOS Safari specific styles */
+  
+  /* Fix for iOS Safari viewport height issues */
+  .min-h-screen {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+  }
+  
+  /* Prevent iOS Safari from zooming on input focus */
+  input, textarea, select {
+    font-size: 16px !important;
+  }
+  
+  /* Fix for iOS Safari backdrop-filter issues */
+  .glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+  
+  .glass-dark {
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+  
+  /* Fix for iOS Safari transform issues */
+  .hover\:scale-105:hover {
+    transform: scale(1.05);
+    -webkit-transform: scale(1.05);
+  }
+  
+  .hover\:scale-110:hover {
+    transform: scale(1.1);
+    -webkit-transform: scale(1.1);
+  }
+  
+  /* Fix for iOS Safari animation issues */
+  .animate-spin {
+    animation: spin 1s linear infinite;
+    -webkit-animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  
+  @-webkit-keyframes spin {
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(360deg); }
+  }
+}

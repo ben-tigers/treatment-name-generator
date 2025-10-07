@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Sparkles, Lock, Unlock, Heart, Copy, Share2, Download, RefreshCw, Wand2, Zap, Star } from 'lucide-react';
 import GlobalTotal from './components/GlobalTotal';
+import IOSDebugInfo from './components/IOSDebugInfo';
 
 const WORDBANK = {
   NATURE_WATER: [
@@ -265,7 +266,13 @@ export default function TreatmentNameGenerator() {
     
     // Record event to global counter (fire and forget)
     try {
-      await fetch('/api/record', { method: 'POST' });
+      await fetch('/api/record', { 
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      });
     } catch (error) {
       console.error('Failed to record generation event:', error);
       // Don't block the UI if recording fails
@@ -782,6 +789,7 @@ export default function TreatmentNameGenerator() {
           </div>
         </footer>
       </div>
+      <IOSDebugInfo />
     </div>
   );
 }
