@@ -167,6 +167,9 @@ export default function TreatmentNameGenerator() {
   const [wordCount, setWordCount] = useState(3);
   const [totalGenerated, setTotalGenerated] = useState(0);
   const [allGeneratedNames, setAllGeneratedNames] = useState([]); // Track all names ever generated
+  
+  // Detect iOS devices
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
   const [analytics, setAnalytics] = useState({
     totalGenerations: 0,
     totalFavorites: 0,
@@ -548,22 +551,25 @@ export default function TreatmentNameGenerator() {
                   </div>
                   
                   <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4" role="group" aria-label="Name actions">
-                    <button
-                      onClick={() => copyToClipboard(featured)}
-                      className="group glass-dark px-6 sm:px-8 py-3 sm:py-4 rounded-2xl transition-all duration-300 hover:scale-105 hover:border-purple-400 flex items-center justify-center gap-3"
-                      aria-label={`Copy "${featured}" to clipboard`}
-                    >
-                      <Copy className="w-5 h-5 text-purple-300 group-hover:text-purple-400 transition-colors" aria-hidden="true" />
-                      <span className="text-white font-semibold text-base sm:text-lg">Copy</span>
-                    </button>
+                    {!isIOS && (
+                      <button
+                        onClick={() => copyToClipboard(featured)}
+                        className="group glass-dark px-6 sm:px-8 py-3 sm:py-4 rounded-2xl transition-all duration-300 hover:scale-105 hover:border-purple-400 flex items-center justify-center gap-3"
+                        aria-label={`Copy "${featured}" to clipboard`}
+                      >
+                        <Copy className="w-5 h-5 text-purple-300 group-hover:text-purple-400 transition-colors" aria-hidden="true" />
+                        <span className="text-white font-semibold text-base sm:text-lg">Copy</span>
+                      </button>
+                    )}
                     
-                    <button
-                      onClick={() => toggleFavorite(featured)}
-                      className={`group px-6 sm:px-8 py-3 sm:py-4 rounded-2xl transition-all duration-300 hover:scale-105 flex items-center justify-center gap-3 ${
-                        favorites.includes(featured)
-                          ? 'bg-gradient-to-r from-pink-500 to-rose-500 shadow-lg shadow-pink-500/50'
-                          : 'glass-dark hover:border-pink-400'
-                      }`}
+                    {!isIOS && (
+                      <button
+                        onClick={() => toggleFavorite(featured)}
+                        className={`group px-6 sm:px-8 py-3 sm:py-4 rounded-2xl transition-all duration-300 hover:scale-105 flex items-center justify-center gap-3 ${
+                          favorites.includes(featured)
+                            ? 'bg-gradient-to-r from-pink-500 to-rose-500 shadow-lg shadow-pink-500/50'
+                            : 'glass-dark hover:border-pink-400'
+                        }`}
                       aria-label={`${favorites.includes(featured) ? 'Remove from' : 'Add to'} favorites`}
                       aria-pressed={favorites.includes(featured)}
                     >
@@ -576,6 +582,7 @@ export default function TreatmentNameGenerator() {
                         {favorites.includes(featured) ? 'Favorited' : 'Favorite'}
                       </span>
                     </button>
+                    )}
                     
                     <button
                       onClick={() => {
@@ -731,22 +738,24 @@ export default function TreatmentNameGenerator() {
                   >
                     <div className="flex justify-between items-center">
                       <span className="font-bold text-white text-lg">{name}</span>
-                      <div className="flex gap-2" role="group" aria-label={`Actions for ${name}`}>
-                        <button
-                          onClick={() => copyToClipboard(name)}
-                          className="p-2 glass rounded-lg hover:bg-purple-500/20 transition-all"
-                          aria-label={`Copy "${name}" to clipboard`}
-                        >
-                          <Copy className="w-5 h-5 text-purple-300" aria-hidden="true" />
-                        </button>
-                        <button
-                          onClick={() => toggleFavorite(name)}
-                          className="p-2 glass rounded-lg hover:bg-pink-500/20 transition-all"
-                          aria-label={`Remove "${name}" from favorites`}
-                        >
-                          <Heart className="w-5 h-5 fill-pink-400 text-pink-400" aria-hidden="true" />
-                        </button>
-                      </div>
+                      {!isIOS && (
+                        <div className="flex gap-2" role="group" aria-label={`Actions for ${name}`}>
+                          <button
+                            onClick={() => copyToClipboard(name)}
+                            className="p-2 glass rounded-lg hover:bg-purple-500/20 transition-all"
+                            aria-label={`Copy "${name}" to clipboard`}
+                          >
+                            <Copy className="w-5 h-5 text-purple-300" aria-hidden="true" />
+                          </button>
+                          <button
+                            onClick={() => toggleFavorite(name)}
+                            className="p-2 glass rounded-lg hover:bg-pink-500/20 transition-all"
+                            aria-label={`Remove "${name}" from favorites`}
+                          >
+                            <Heart className="w-5 h-5 fill-pink-400 text-pink-400" aria-hidden="true" />
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}
