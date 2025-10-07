@@ -66,12 +66,18 @@ export default function AdminPage() {
           <h1 className="text-3xl font-bold text-white mb-6 text-center">Admin Access</h1>
           <div className="space-y-4">
             <input
-              type="password"
+              type="text"
+              inputMode="text"
+              autoComplete="off"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
               placeholder="Enter admin token"
               value={token}
               onChange={(e) => setToken(e.target.value)}
-              className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-purple-300 focus:outline-none focus:border-purple-400"
+              className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-purple-300 focus:outline-none focus:border-purple-400 font-mono text-sm"
             />
+            <p className="text-xs text-purple-300 mt-1">Tip: You can paste the full token here. It won’t auto-capitalize or correct on iOS.</p>
             <button
               onClick={() => token && fetchEvents()}
               className="w-full px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl text-white font-semibold hover:scale-105 transition-transform"
