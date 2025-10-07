@@ -468,10 +468,6 @@ export default function TreatmentNameGenerator() {
             <span className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" aria-hidden="true"></span>
             <span>For entertainment purposes only</span>
           </div>
-          
-          <div className="mt-4">
-            <GlobalTotal />
-          </div>
         </header>
 
         <div className="glass rounded-3xl p-4 sm:p-6 md:p-8 lg:p-10 mb-10 shadow-2xl animate-scaleIn border-2 border-purple-500/30">
@@ -761,20 +757,20 @@ export default function TreatmentNameGenerator() {
             )}
           </div>
         ) : (
-          <div className="glass rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl animate-scaleIn border-2 border-purple-500/30" role="region" aria-label="Statistics">
+          <div className="glass rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl animate-scaleIn border-2 border-purple-500/30" role="region" aria-label="Global Statistics">
             <div className="text-center">
               <div className="inline-flex items-center gap-3 mb-4">
                 <Sparkles className="w-6 sm:w-8 h-6 sm:h-8 text-purple-400 animate-pulse" aria-hidden="true" />
                 <h3 className="text-2xl sm:text-3xl font-black text-white">
-                  Names Generated
+                  Global Names Generated
                 </h3>
                 <Sparkles className="w-6 sm:w-8 h-6 sm:h-8 text-purple-400 animate-pulse" style={{ animationDelay: '0.5s' }} aria-hidden="true" />
               </div>
-              <div className="text-4xl sm:text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 mb-4" aria-label={`${totalGenerated.toLocaleString()} names generated`}>
-                {totalGenerated.toLocaleString()}
+              <div className="text-4xl sm:text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 mb-4">
+                <GlobalTotal />
               </div>
               <p className="text-purple-200 text-base sm:text-lg">
-                Keep generating to discover more amazing names!
+                Join users worldwide in discovering amazing names!
               </p>
             </div>
           </div>

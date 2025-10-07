@@ -110,21 +110,13 @@ export default function GlobalTotal() {
 
   if (total === null) {
     return (
-      <div className="flex items-center gap-2 text-purple-300">
-        <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
-        <span>Loading global stats...</span>
-      </div>
+      <span className="text-purple-300 animate-pulse">Loading...</span>
     );
   }
 
   return (
-    <div className="flex items-center gap-2 text-purple-300">
-      <div className={`w-2 h-2 rounded-full ${
-        isConnected ? 'bg-green-400' : 'bg-yellow-400'
-      }`}></div>
-      <span className="text-sm sm:text-base">
-        Global names generated: <span className="font-bold text-purple-200">{total.toLocaleString()}</span>
-      </span>
-    </div>
+    <span className="text-purple-200 font-bold">
+      {total.toLocaleString()}
+    </span>
   );
 }
