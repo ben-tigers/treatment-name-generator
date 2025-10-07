@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Sparkles, Lock, Unlock, Heart, Copy, Share2, Download, RefreshCw, Wand2, Zap, Star } from 'lucide-react';
+import GlobalTotal from './components/GlobalTotal';
 
 const WORDBANK = {
   NATURE_WATER: [
@@ -255,12 +256,20 @@ export default function TreatmentNameGenerator() {
     return () => cancelAnimationFrame(animationId);
   }, []);
 
-  const generateNames = () => {
+  const generateNames = async () => {
     setIsGenerating(true);
     setFeatured('');
     
     // Track generation analytics
     trackGeneration();
+    
+    // Record event to global counter (fire and forget)
+    try {
+      await fetch('/api/record', { method: 'POST' });
+    } catch (error) {
+      console.error('Failed to record generation event:', error);
+      // Don't block the UI if recording fails
+    }
     
     setTimeout(() => {
       const newNames = [];
@@ -451,6 +460,10 @@ export default function TreatmentNameGenerator() {
           <div className="inline-flex items-center gap-2 glass-dark px-4 py-2 rounded-full text-sm text-purple-300 mt-2" role="note" aria-label="Disclaimer">
             <span className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" aria-hidden="true"></span>
             <span>For entertainment purposes only</span>
+          </div>
+          
+          <div className="mt-4">
+            <GlobalTotal />
           </div>
         </header>
 
@@ -759,6 +772,15 @@ export default function TreatmentNameGenerator() {
             </div>
           </div>
         )}
+        
+        {/* Privacy Notice */}
+        <footer className="mt-16 text-center">
+          <div className="glass-dark px-6 py-4 rounded-xl inline-block">
+            <p className="text-purple-300 text-sm">
+              This site records approximate location and IP for aggregate stats and abuse prevention.
+            </p>
+          </div>
+        </footer>
       </div>
     </div>
   );
