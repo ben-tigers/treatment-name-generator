@@ -76,6 +76,7 @@ const TEMPLATES = [
 ];
 
 const generateName = (locked = [], alliteration = false, customWord = '', includeCustom = false, wordCount = 3, existingNames = []) => {
+  console.log('Generating name with wordCount:', wordCount);
   let template = TEMPLATES[Math.floor(Math.random() * TEMPLATES.length)];
   
   const parts = [];
@@ -133,6 +134,7 @@ const generateName = (locked = [], alliteration = false, customWord = '', includ
   }
   
   const generatedName = parts.join(' ');
+  console.log('Generated name:', generatedName, 'Word count:', generatedName.split(' ').length, 'Target:', targetWordCount);
   
   // Check for duplicates and inappropriate combinations
   if (existingNames.includes(generatedName)) {
@@ -622,15 +624,19 @@ export default function TreatmentNameGenerator() {
 
             <div className="glass-dark px-6 py-4 rounded-xl flex items-center gap-4">
               <span className="text-purple-200 font-semibold">Words:</span>
+              <span className="text-purple-300 text-sm">(Current: {wordCount})</span>
               <div className="flex gap-2" role="group" aria-label="Word count selection">
                 {[2, 3, 4, 5, 6, 7].map((count) => (
                   <button
                     key={count}
-                    onClick={() => setWordCount(count)}
-                    className={`w-10 h-10 rounded-lg font-bold text-lg transition-all duration-300 ${
+                    onClick={() => {
+                      console.log('Word count clicked:', count);
+                      setWordCount(count);
+                    }}
+                    className={`w-10 h-10 rounded-lg font-bold text-lg transition-all duration-300 cursor-pointer touch-manipulation select-none ${
                       wordCount === count
-                        ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white scale-110 shadow-lg'
-                        : 'bg-white/10 text-purple-300 hover:bg-white/20'
+                        ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white scale-110 shadow-lg ring-2 ring-purple-400'
+                        : 'bg-white/10 text-purple-300 hover:bg-white/20 hover:scale-105 active:scale-95'
                     }`}
                     aria-label={`Set word count to ${count}`}
                     aria-pressed={wordCount === count}
